@@ -37,9 +37,9 @@ const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/nasiib-online/build")));
+  app.use(express.static(path.join(__dirname, "/nasiib-online/dist")));
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "nasiib-online", "build", "index.html"))
+    res.sendFile(path.resolve(__dirname, "nasiib-online", "dist", "index.html"))
   );
 } else {
   app.get("/", (req, res) => {
