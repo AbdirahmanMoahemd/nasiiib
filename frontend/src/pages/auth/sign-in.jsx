@@ -64,7 +64,7 @@ export function SignIn() {
                 Sign In
               </Typography>
             </CardHeader>
-            <form>
+            <form onSubmit={submitHandler}>
               <CardBody className="flex flex-col gap-4">
                 {message != "" && <Message severity="error" text={message} />}
                 {error && <Message severity="error" text={error} />}
