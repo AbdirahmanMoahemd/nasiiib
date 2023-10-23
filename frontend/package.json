@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "react-scripts build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "react-icons": "^4.11.0",
     "react-redux": "^8.0.7",
     "react-router-dom": "^6.4.2",
+    "react-scripts": "^5.0.1",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2"
