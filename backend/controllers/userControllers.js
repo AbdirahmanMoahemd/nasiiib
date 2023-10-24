@@ -64,7 +64,6 @@ export const getUserProfileById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id)
     .populate("cart.product")
     .populate("wishlist.product")
-    .populate("cartMeal.meal");
   const { token } = req.body;
 
   if (user) {
@@ -192,7 +191,6 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 export const updateProfile2 = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).populate("cart.product")
   .populate("wishlist.product")
-  .populate("cartMeal.meal");;
 
   if (user) {
     user.name = req.body.name || user.name;
