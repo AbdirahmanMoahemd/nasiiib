@@ -223,7 +223,7 @@ const CategoryScreen = () => {
                           </Typography>
                         </td>
                         <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
-                          <img src={category.icon} className="h-12 w-14" />
+                          <img src={category.icon} className="h-8 w-10" />
                         </td>
 
                         <td className="border-b border-blue-gray-50 py-3 px-6 text-left">

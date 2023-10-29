@@ -21,14 +21,18 @@ import {
   EllipsisVerticalIcon,
   ArrowUpIcon,
 } from "@heroicons/react/24/outline";
-import { StatisticsCard } from "@/widgets/cards";
-import { StatisticsChart } from "@/widgets/charts";
+import StatisticsCard2 from "@/widgets/cards/statistics-card2";
+import { FcSalesPerformance } from "react-icons/fc";
+import { BiStore } from "react-icons/bi";
+import { FaUsers } from "react-icons/fa";
 import {
-  statisticsCardsData,
-  statisticsChartsData,
-  projectsTableData,
-  ordersOverviewData,
-} from "@/data";
+  AiFillDollarCircle,
+  AiOutlineWarning,
+} from "react-icons/ai";
+
+
+
+
 
 export function Home() {
   const navigate = useNavigate();
@@ -45,22 +49,74 @@ export function Home() {
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
-          <StatisticsCard
-            key={title}
-            {...rest}
-            title={title}
-            icon={React.createElement(icon, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={footer.color}>{footer.value}</strong>
-                &nbsp;{footer.label}
-              </Typography>
-            }
-          />
-        ))}
+      <StatisticsCard2
+          color="pink"
+          title={"Total Sales"}
+          icon={<FcSalesPerformance className="h-6 w-6" />}
+          value={"0"}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong
+                className="text-green-500"
+              >
+                0%
+              </strong>
+              &nbsp;
+              {"more than yesterday"}
+            </Typography>
+          }
+        />
+        <StatisticsCard2
+          color="green"
+          title={"Total Products"}
+          icon={<BiStore className="h-6 w-6" />}
+          value={"0"}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong
+                className="text-green-500"
+              >
+                0%
+              </strong>
+              &nbsp;
+              {"more than yesterday"}
+            </Typography>
+          }
+        />
+        <StatisticsCard2
+          color="orange"
+          title={"Total Users"}
+          icon={<FaUsers className="h-6 w-6" />}
+          value={"0"}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong
+                className="text-green-500"
+              >
+                0%
+              </strong>
+              &nbsp;
+              {"more than yesterday"}
+            </Typography>
+          }
+        />
+        <StatisticsCard2
+          color="purple"
+          title={"Total Amount"}
+          icon={<AiFillDollarCircle className="h-6 w-6" />}
+          value={"0"}
+          footer={
+            <Typography className="font-normal text-blue-gray-600">
+              <strong
+                className="text-green-500"
+              >
+                0%
+              </strong>
+              &nbsp;
+              {"more than yesterday"}
+            </Typography>
+          }
+        />
       </div>
      
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
@@ -73,15 +129,9 @@ export function Home() {
           >
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-1">
-                Projects
+                Recent Orders
               </Typography>
-              <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckIcon strokeWidth={3} className="h-4 w-4 text-blue-500" />
-                <strong>30 done</strong> this month
-              </Typography>
+              
             </div>
             <Menu placement="left-start">
               <MenuHandler>
@@ -104,7 +154,7 @@ export function Home() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["companies", "members", "budget", "completion"].map(
+                  {["Order No","Name"	,"Phone"	,"Date",	"PAYMENT METHOD",	"TOTAL",	"IsPaid"	, "IsDelivered"].map(
                     (el) => (
                       <th
                         key={el}
@@ -122,71 +172,6 @@ export function Home() {
                 </tr>
               </thead>
               <tbody>
-                {projectsTableData.map(
-                  ({ img, name, members, budget, completion }, key) => {
-                    const className = `py-3 px-5 ${
-                      key === projectsTableData.length - 1
-                        ? ""
-                        : "border-b border-blue-gray-50"
-                    }`;
-
-                    return (
-                      <tr key={name}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <Avatar src={img} alt={name} size="sm" />
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-bold"
-                            >
-                              {name}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
-                          ))}
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            variant="small"
-                            className="text-xs font-medium text-blue-gray-600"
-                          >
-                            {budget}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <div className="w-10/12">
-                            <Typography
-                              variant="small"
-                              className="mb-1 block text-xs font-medium text-blue-gray-600"
-                            >
-                              {completion}%
-                            </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
               </tbody>
             </table>
           </CardBody>

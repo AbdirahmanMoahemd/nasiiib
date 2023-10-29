@@ -43,22 +43,40 @@ export const getByAdminProducts = asyncHandler(async (req, res) => {
     .populate("category")
     .populate("subcategory")
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    .skip(pageSize * (page - 1))
+    .sort({createdAt: -1});
 
   res.json({ products, count });
 });
 
 export const getProductsByApp = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find()
+    const products = await Product.find({isFeatured: true})
       .populate("category")
-      .populate("subcategory");
-    products.sort((a, b) => (a._id > b._id ? -1 : 1));
+      .populate("subcategory")
+      .sort({createdAt: -1});
+    
     res.json(products);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
+
+
+export const getProductsByname = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find({
+      name: { $regex: req.params.name, $options: "i" },
+      isFeatured: true
+    });
+    if (products) {
+      res.json(products);
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 
 // @desc    Fetch single product
 // @route   GET /api/product/:id

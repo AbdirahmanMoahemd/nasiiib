@@ -119,7 +119,6 @@ const OrdersScreen = () => {
     });
   };
 
-
   const updateHandler = (e) => {
     dispatch(
       updateCategory({
@@ -185,7 +184,16 @@ const OrdersScreen = () => {
             <table className="w-full min-w-[640px] table-auto">
               <thead className="sticky top-0 z-40 border-b bg-white">
                 <tr>
-                  {["NAME", "IMAGE", "", ""].map((el) => (
+                  {[
+                    "Order No",
+                    "Name",
+                    "Phone",
+                    "Date",
+                    "PAYMENT METHOD",
+                    "TOTAL",
+                    "IsPaid",
+                    "IsDelivered",
+                  ].map((el) => (
                     <th
                       key={el}
                       className="border-b border-blue-gray-50 py-3 px-6 text-left"
@@ -200,58 +208,6 @@ const OrdersScreen = () => {
                   ))}
                 </tr>
               </thead>
-              {loading ? (
-                <ProgressSpinner
-                  style={{ width: "20px", height: "20px" }}
-                  strokeWidth="6"
-                  fill="var(--surface-ground)"
-                  animationDuration=".5s"
-                />
-              ) : error ? (
-                <Message severity="error" text={error} />
-              ) : (
-                <>
-                  <tbody className="overflow-y-auto">
-                    {categories.map((category) => (
-                      <tr key={category.id}>
-                        <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
-                          <Typography
-                            variant="small"
-                            className="text-[11px] font-medium capitalize text-blue-gray-400"
-                          >
-                            {category.name}
-                          </Typography>
-                        </td>
-                        <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
-                          <img src={category.icon} className="h-12 w-14" />
-                        </td>
-
-                        <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
-                          <Button
-                            label=""
-                            icon="pi pi-file-edit"
-                            className="h-8"
-                            onClick={() => {
-                              setId(category.id)
-                              setName(category.name)
-                              setIcon(category.icon)
-                              setEdit(true)
-                            }}
-                          />
-                        </td>
-                        <td>
-                          <Button
-                            className="h-8 text-red-700"
-                            label=""
-                            icon="pi pi-delete-left"
-                            onClick={() => deleteHandler(category.id)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </>
-              )}
             </table>
           </CardBody>
         </Card>
@@ -327,7 +283,7 @@ const OrdersScreen = () => {
             <div className="mt-4 flex justify-center">
               <button
                 type="submit"
-                className="text-primary bg-primary border-primary hover:text-primary font-roboto rounded border py-2 px-10 text-center font-medium uppercase transition hover:bg-transparent"
+                className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-primary transition hover:bg-transparent hover:text-primary"
               >
                 Save
               </button>
@@ -407,7 +363,7 @@ const OrdersScreen = () => {
             <div className="mt-4 flex justify-center">
               <button
                 type="submit"
-                className="text-white bg-primary border-primary hover:text-primary font-roboto rounded border py-2 px-10 text-center font-medium uppercase transition hover:bg-transparent"
+                className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-white transition hover:bg-transparent hover:text-primary"
               >
                 Update
               </button>

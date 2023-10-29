@@ -36,6 +36,7 @@ import { SketchPicker } from "react-color";
 import { listCategories } from "@/actions/categoryActions";
 import { listSubCategories } from "@/actions/subCategoryActions";
 
+
 const ProductScreen = () => {
   const [create, setCreate] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -124,6 +125,14 @@ const ProductScreen = () => {
       setNewPrice(0);
       setisDiscounted(false);
       setisFeatured(true);
+      setImages([])
+      setImage("")
+      setSizes([])
+      setColors([])
+      setCountInStock(0)
+      setTemSizes("")
+      setCategory("")
+      setSubCategory("")
     }
 
     if (successUpdate) {
@@ -181,29 +190,27 @@ const ProductScreen = () => {
   };
 
   const updateHandler = (e) => {
-    console.log(Sizes);
-    console.log(Colors);
-    
-    // dispatch(
-    //   updateProduct({
-    //     _id: id,
-    //     name,
-    //     images,
-    //     Colors,
-    //     Sizes,
-    //     description,
-    //     mainDescription,
-    //     brand,
-    //     category,
-    //     subcategory,
-    //     price,
-    //     countInStock,
-    //     isFeatured,
-    //     isDiscounted,
-    //     newPrice,
-    //   })
-    // );
     e.preventDefault();
+    dispatch(
+      updateProduct({
+        _id: id,
+        name,
+        images,
+        colors,
+        sizes,
+        description,
+        mainDescription,
+        brand,
+        category,
+        subcategory,
+        price,
+        countInStock,
+        isFeatured,
+        isDiscounted,
+        newPrice,
+      })
+    );
+    
 
   };
 
@@ -268,6 +275,7 @@ const ProductScreen = () => {
   return (
     <>
       <div className="mt-12 mb-8 flex flex-col gap-12">
+      
         <Card className="overflow-hidden xl:col-span-3">
           <CardHeader
             floated={false}
@@ -324,13 +332,13 @@ const ProductScreen = () => {
                     "Image",
                     "Category",
                     "Subcategory",
-                    "CountInStock",
+                    "InStock",
                     "Price",
-                    "isDiscounted",
+                    "Discounted",
                     "NewPrice",
                     "Sizes",
                     "Colors",
-                    "isFeatured",
+                    "Featured",
                   ].map((el) => (
                     <th
                       key={el}

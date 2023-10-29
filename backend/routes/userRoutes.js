@@ -16,6 +16,4 @@ router.route("/register/app").post(registerUser2);
 router.route("/app/login").post(authUser2);
 router.route("/profile/:id").post(getUserProfileById);
 
-
-
-export default router
+export default router;
