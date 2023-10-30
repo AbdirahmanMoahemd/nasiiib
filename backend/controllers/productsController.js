@@ -62,6 +62,20 @@ export const getProductsByApp = asyncHandler(async (req, res) => {
   }
 });
 
+export const getProductsByCategoryByApp = asyncHandler(async (req, res) => {
+  try {
+     
+    const products = await Product.find({isFeatured: true, category:req.body.category })
+      .populate("category")
+      .populate("subcategory")
+      .sort({createdAt: -1});
+    
+    res.json(products);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 
 export const getProductsByname = asyncHandler(async (req, res) => {
   try {
