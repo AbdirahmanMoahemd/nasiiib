@@ -17,7 +17,7 @@ const router = express.Router();
 router.route("/").get(getProducts).post(protect, admin, createProduct);
 router.route("/admin/products").get(protect, admin, getByAdminProducts);
 router.route("/app/products").get(getProductsByApp);
-router.route("/app/category").get(getProductsByCategoryByApp);
+router.route("/app/category").post(getProductsByCategoryByApp);
 router.route("/search/:name").get(getProductsByname);
 router
   .route("/:id")
