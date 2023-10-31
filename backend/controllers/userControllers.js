@@ -27,7 +27,6 @@ export const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
@@ -47,15 +46,12 @@ export const authUser2 = asyncHandler(async (req, res) => {
       country: user.country,
       cart: user.cart,
       wishlist: user.wishlist,
-      cartMeal: user.cartMeal,
       token: generateToken(user._id),
     });
-  }  else {
-    res.status(400).json({msg: "Invalid email or password"});
+  } else {
+    res.status(400).json({ msg: "Invalid email or password" });
   }
 });
-
-
 
 // @desc    Get user profile
 // @route   GET /api/users/profile
@@ -63,7 +59,7 @@ export const authUser2 = asyncHandler(async (req, res) => {
 export const getUserProfileById = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id)
     .populate("cart.product")
-    .populate("wishlist.product")
+    .populate("wishlist.product");
   const { token } = req.body;
 
   if (user) {
@@ -79,16 +75,11 @@ export const getUserProfileById = asyncHandler(async (req, res) => {
       token,
       cart: user.cart,
       wishlist: user.wishlist,
-      cartMeal: user.cartMeal,
     });
   } else {
-    res.status(404).json({msg: "User Not Found"});
-   
+    res.status(404).json({ msg: "User Not Found" });
   }
 });
-
-
-
 
 // @desc    Register a new user
 // @route   POST /api/users
@@ -123,7 +114,6 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc    Register a new user
 // @route   POST /api/users
 // @access  Public
@@ -132,7 +122,7 @@ export const registerUser2 = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    res.status(400).json({msg: "User already exists"});
+    res.status(400).json({ msg: "User already exists" });
   }
 
   const user = await User.create({
@@ -184,13 +174,13 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc    Update user profile
 // @route   PUT /api/users/profile
 // @access  Private
 export const updateProfile2 = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).populate("cart.product")
-  .populate("wishlist.product")
+  const user = await User.findById(req.user._id)
+    .populate("cart.product")
+    .populate("wishlist.product");
 
   if (user) {
     user.name = req.body.name || user.name;
@@ -199,11 +189,10 @@ export const updateProfile2 = asyncHandler(async (req, res) => {
     user.address = req.body.address || user.address;
     user.city = req.body.city || user.city;
     user.country = req.body.country || user.country;
-    user.isAdmin = user.isAdmin
-    user.token = user.token
-    user.cart = user.cart
-    user.wishlist = user.wishlist
-    user.cartMeal = user.cartMeal
+    user.isAdmin = user.isAdmin;
+    user.token = user.token;
+    user.cart = user.cart;
+    user.wishlist = user.wishlist;
 
     const updatedUser = await user.save();
 
@@ -219,10 +208,9 @@ export const updateProfile2 = asyncHandler(async (req, res) => {
       token: updatedUser.token,
       cart: updatedUser.cart,
       wishlist: updatedUser.wishlist,
-      cartMeal: updatedUser.cartMeal,
     });
   } else {
-    res.status(404).json({msg: "User Not Found" });
+    res.status(404).json({ msg: "User Not Found" });
   }
 });
 
@@ -283,10 +271,10 @@ export const updateUserPassword = asyncHandler(async (req, res) => {
       address: user.address,
       city: user.city,
       country: user.country,
-      token: generateToken(user._id)
+      token: generateToken(user._id),
     });
   } else {
-    res.status(404).json({msg :"User Not Found" });
+    res.status(404).json({ msg: "User Not Found" });
   }
 });
 
@@ -342,7 +330,6 @@ export const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc    Get user by Id
 // @route   GET /api/users/:id
 // @access  Private/Admin
@@ -356,9 +343,6 @@ export const getUserById2 = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
-
-
-
 
 // @desc    Update user
 // @route   PUT /api/users/:id
@@ -384,7 +368,6 @@ export const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc    Update user password
 // @route   PUT /api/users/password
 // @access  Private
@@ -407,7 +390,7 @@ export const forgottUserPassword = asyncHandler(async (req, res) => {
 // save user address
 export const saveUserAddress = asyncHandler(async (req, res) => {
   try {
-    const { address,city,country  } = req.body;
+    const { address, city, country } = req.body;
     let user = await User.findById(req.user);
     user.address = address;
     user.city = city;

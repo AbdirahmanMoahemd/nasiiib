@@ -62,7 +62,7 @@ const userSchema = mongoose.Schema(
             type: Number,
           },
         ],
- 	price: { type: Number },
+        price: { type: Number },
       },
     ],
     wishlist: [
@@ -71,29 +71,6 @@ const userSchema = mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
           required: true,
-        },
-      },
-    ],
-    cartMeal: [
-      {
-        meal: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Meal",
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-        price: { type: Number },
-        name: { type: String },
-        images: [
-          {
-            type: String,
-          },
-        ],
-        note: {
-          type: String,
         },
       },
     ],

@@ -5,7 +5,7 @@ import Product from "../models/productModels.js";
 // @route   GET /api/products
 // @access  Public
 export const getProducts = asyncHandler(async (req, res) => {
-  let pageSize = 30;
+  let pageSize = 5;
   const page = Number(req.query.pageNumber) || 1;
 
   const keyword = req.query.keyword
@@ -50,16 +50,25 @@ export const getByAdminProducts = asyncHandler(async (req, res) => {
 });
 
 export const getProductsByApp = asyncHandler(async (req, res) => {
-  try {
-    const products = await Product.find({isFeatured: true})
-      .populate("category")
-      .populate("subcategory")
-      .sort({createdAt: -1});
-    
-    res.json(products);
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
+  let pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+  const count = await Product.countDocuments({ ...keyword });
+  const products = await Product.find({ ...keyword })
+    .populate("category")
+    .populate("subcategory")
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .sort({createdAt: -1});
+
+  res.json(products);
 });
 
 export const getProductsByCategoryByApp = asyncHandler(async (req, res) => {
