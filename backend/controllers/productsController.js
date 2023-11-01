@@ -44,53 +44,57 @@ export const getByAdminProducts = asyncHandler(async (req, res) => {
     .populate("subcategory")
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-    .sort({createdAt: -1});
+    .sort({ createdAt: -1 });
 
   res.json({ products, count });
 });
 
 export const getProductsByApp = asyncHandler(async (req, res) => {
-  let pageSize = 5;
-  const page = Number(req.query.pageNumber) || 1;
-  const keyword = req.query.keyword
-    ? {
-        name: {
-          $regex: req.query.keyword,
-          $options: "i",
-        },
-      }
-    : {};
-  const count = await Product.countDocuments({ ...keyword });
-  const products = await Product.find({ ...keyword })
-    .populate("category")
-    .populate("subcategory")
-    .limit(pageSize)
-    .skip(pageSize * (page - 1))
-    .sort({createdAt: -1});
-
-  res.json(products);
-});
-
-export const getProductsByCategoryByApp = asyncHandler(async (req, res) => {
   try {
-     
-    const products = await Product.find({isFeatured: true, category:req.body.category })
+    let pageSize = 5;
+    const page = Number(req.query.pageNumber) || 1;
+    const keyword = req.query.keyword
+      ? {
+          name: {
+            $regex: req.query.keyword,
+            $options: "i",
+          },
+        }
+      : {};
+    const products = await Product.find({ ...keyword })
       .populate("category")
       .populate("subcategory")
-      .sort({createdAt: -1});
-    
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+      .sort({ createdAt: -1 });
+
     res.json(products);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
+export const getProductsByCategoryByApp = asyncHandler(async (req, res) => {
+  try {
+    const products = await Product.find({
+      isFeatured: true,
+      category: req.body.category,
+    })
+      .populate("category")
+      .populate("subcategory")
+      .sort({ createdAt: -1 });
+
+    res.json(products);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 export const getProductsByname = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({
       name: { $regex: req.params.name, $options: "i" },
-      isFeatured: true
+      isFeatured: true,
     });
     if (products) {
       res.json(products);
@@ -99,7 +103,6 @@ export const getProductsByname = asyncHandler(async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
-
 
 // @desc    Fetch single product
 // @route   GET /api/product/:id
