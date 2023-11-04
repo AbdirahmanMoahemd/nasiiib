@@ -90,15 +90,13 @@ export const getTopProductsByApp = asyncHandler(async (req, res) => {
       .populate("category")
       .populate("subcategory")
       .limit(30)
-      .sort({ rating: -1 })
-
+      .sort({ rating: -1 });
 
     res.json(products);
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
-
 
 export const getNewProductsByApp = asyncHandler(async (req, res) => {
   try {
@@ -118,6 +116,33 @@ export const getNewProductsByApp = asyncHandler(async (req, res) => {
       .limit(30)
       .sort({ createdAt: -1 });
 
+    res.json(products);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+export const getDiscountedProductsByApp = asyncHandler(async (req, res) => {
+  try {
+    // let pageSize = 5;
+    // const page = Number(req.query.pageNumber) || 1;
+    const keyword = req.query.keyword
+      ? {
+          name: {
+            $regex: req.query.keyword,
+            $options: "i",
+          },
+        }
+      : {};
+    const products = await Product.find({
+      ...keyword,
+      isFeatured: true,
+      isDiscounted: true,
+    })
+      .populate("category")
+      .populate("subcategory")
+      .limit(30)
+      .sort({ createdAt: -1 });
 
     res.json(products);
   } catch (e) {

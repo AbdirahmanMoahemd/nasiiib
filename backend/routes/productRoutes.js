@@ -4,6 +4,7 @@ import {
   createProduct,
   deleteProduct,
   getByAdminProducts,
+  getDiscountedProductsByApp,
   getNewProductsByApp,
   getProductById,
   getProducts,
@@ -22,6 +23,7 @@ router.route("/app/products").get(getProductsByApp);
 router.route("/app/category").post(getProductsByCategoryByApp);
 router.route("/app/top").get(getTopProductsByApp);
 router.route("/app/new").get(getNewProductsByApp);
+router.route("/app/discounted").get(getDiscountedProductsByApp);
 router.route("/search/:name").get(getProductsByname);
 router
   .route("/:id")
