@@ -275,7 +275,6 @@ const ProductScreen = () => {
   return (
     <>
       <div className="mt-12 mb-8 flex flex-col gap-12">
-      
         <Card className="overflow-hidden xl:col-span-3">
           <CardHeader
             floated={false}

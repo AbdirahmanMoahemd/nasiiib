@@ -4,11 +4,13 @@ import {
   createProduct,
   deleteProduct,
   getByAdminProducts,
+  getNewProductsByApp,
   getProductById,
   getProducts,
   getProductsByApp,
   getProductsByCategoryByApp,
   getProductsByname,
+  getTopProductsByApp,
   updateProduct,
 } from "../controllers/productsController.js";
 
@@ -18,6 +20,8 @@ router.route("/").get(getProducts).post(protect, admin, createProduct);
 router.route("/admin/products").get(protect, admin, getByAdminProducts);
 router.route("/app/products").get(getProductsByApp);
 router.route("/app/category").post(getProductsByCategoryByApp);
+router.route("/app/top").get(getTopProductsByApp);
+router.route("/app/new").get(getNewProductsByApp);
 router.route("/search/:name").get(getProductsByname);
 router
   .route("/:id")
