@@ -8,6 +8,8 @@ const categorySchema = mongoose.Schema({
     icon: {
         type: String,
     },
+},{
+    timestamps: true
 })
 
 

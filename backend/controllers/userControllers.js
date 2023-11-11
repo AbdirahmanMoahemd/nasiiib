@@ -178,10 +178,9 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Private
 export const updateProfile2 = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
+  const user = await User.findById(req.params.id)
     .populate("cart.product")
     .populate("wishlist.product");
-
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;

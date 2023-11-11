@@ -11,6 +11,8 @@ const subCategorySchema = mongoose.Schema({
         required:true
     },
     
+},{
+    timestamps: true
 })
 
 

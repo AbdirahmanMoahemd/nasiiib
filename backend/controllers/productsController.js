@@ -20,15 +20,16 @@ export const getProducts = asyncHandler(async (req, res) => {
 
   const products = await Product.find({ ...keyword, isFeatured: true })
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    .skip(pageSize * (page - 1))
+    .sort({ createdAt: -1 });
 
-  products.sort((a, b) => (a._id > b._id ? -1 : 1));
+ 
 
   res.json({ products, count });
 });
 
 export const getByAdminProducts = asyncHandler(async (req, res) => {
-  let pageSize = 50;
+  let pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
   const keyword = req.query.keyword
     ? {

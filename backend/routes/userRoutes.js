@@ -16,5 +16,5 @@ router.route("/login").post(authUser);
 router.route("/register/app").post(registerUser2);
 router.route("/app/login").post(authUser2);
 router.route("/profile/:id").post(getUserProfileById);
-router.route("/app/profile").put(protect, updateProfile2);
+router.route("/app/profile/:id").put(protect, updateProfile2);
 export default router;

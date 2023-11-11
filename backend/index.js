@@ -11,6 +11,7 @@ import categoriesRoutes from "./routes/cetegoryRoutes.js";
 import subCategoriesRoutes from "./routes/subCategoriesRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import slidesRoutes from "./routes/slidesRoutes.js";
 
 
 
@@ -30,6 +31,7 @@ app.use('/api/category', categoriesRoutes)
 app.use('/api/subcategory', subCategoriesRoutes)
 app.use('/api/products', productRoutes)
 app.use("/api/cart", cartRoutes)
+app.use("/api/sliders", slidesRoutes)
 
 
 

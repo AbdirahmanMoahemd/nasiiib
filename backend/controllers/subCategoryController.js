@@ -5,19 +5,46 @@ import SubCategory from "../models/subcategoryModels.js";
 // @route   Get /api/subcategories/
 // @access  Public
 export const getSubCategories = asyncHandler(async (req, res) => {
-  const subcategories = await SubCategory.find().populate("category");
+  let pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+  const count = await SubCategory.countDocuments({ ...keyword });
+  const subcategories = await SubCategory.find({ ...keyword })
+    .populate("category")
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .sort({ createdAt: -1 });
 
   if (!subcategories) {
     res.status(500).json({ success: false });
   }
-  res.status(200).json({ subcategories });
+  res.status(200).json({ subcategories, count });
 });
-
 
 // @desc    Fetch subcategory by id
 // @route   Get /api/subcategories/:id
 // @access  Public
 export const getSubCategoryById = asyncHandler(async (req, res) => {
+  let pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+  const count = await SubCategory.countDocuments({ ...keyword });
   const subcategory = await SubCategory.findById(req.params.id).populate(
     "category"
   );
@@ -30,13 +57,14 @@ export const getSubCategoryById = asyncHandler(async (req, res) => {
   }
 });
 
-
 // @desc    Fetch all subcategories
 // @route   Get /api/subcategories/
 // @access  Public
 export const getSubCategories2 = asyncHandler(async (req, res) => {
   try {
-    const subcategories = await SubCategory.find({}).populate("category");
+    const subcategories = await SubCategory.find({})
+      .populate("category")
+      .sort({ createdAt: -1 });
     res.json(subcategories);
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -46,19 +74,18 @@ export const getSubCategories2 = asyncHandler(async (req, res) => {
 export const getSubCategoryByCategory = asyncHandler(async (req, res) => {
   try {
     const { query } = req.body;
-    let subcategory = await SubCategory.find({ category: query })
-    .populate("category")
+    let subcategory = await SubCategory.find({ category: query }).populate(
+      "category"
+    );
 
     if (subcategory) {
       subcategory.sort((a, b) => (a._id > b._id ? -1 : 1));
       res.json(subcategory);
-    } 
+    }
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
-
-
 
 // @desc    create subcategory
 // @route   POST /api/subcategories/

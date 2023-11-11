@@ -5,15 +5,25 @@ import Category from "../models/categoryModels.js";
 // @route   POST /api/categorie/
 // @access  Public
 export const getCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find();
+  let pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
 
-  if (!categories) {
-    res.status(500).json({ success: false });
-  }
-  res.status(200).json({ categories });
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+  const count = await Category.countDocuments({ ...keyword });
+  const categories = await Category.find({ ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({ categories, count });
 });
-
-
 
 // @desc    Fetch category by id
 // @route   POST /api/categorie/:id
@@ -34,8 +44,7 @@ export const getCategoryById = asyncHandler(async (req, res) => {
 // @access  Public
 export const getCategories2 = asyncHandler(async (req, res) => {
   try {
-    const categories = await Category.find({});
-    categories.sort((a, b) => (a._id > b._id) ? -1 : 1)
+    const categories = await Category.find({}).sort({ createdAt: -1 });
     res.json(categories);
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -68,7 +77,6 @@ export const updateCategory = asyncHandler(async (req, res) => {
   if (category) {
     category.name = name;
     category.icon = icon;
-   
 
     const updatedCategory = await category.save();
     res.json(updatedCategory);

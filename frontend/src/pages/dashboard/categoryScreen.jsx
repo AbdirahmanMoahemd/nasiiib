@@ -26,6 +26,7 @@ import {
 } from "../../actions/categoryActions";
 import { CATEGORY_CREATE_RESET } from "@/constants/categoryConstants";
 import { confirmAlert } from "react-confirm-alert";
+import { Paginator } from "primereact/paginator";
 
 const CategoryScreen = () => {
   const [keyword, setKeyword] = useState("");

@@ -35,14 +35,14 @@ import {
 import { SketchPicker } from "react-color";
 import { listCategories } from "@/actions/categoryActions";
 import { listSubCategories } from "@/actions/subCategoryActions";
-
+import { Paginator } from "primereact/paginator";
 
 const ProductScreen = () => {
   const [create, setCreate] = useState(false);
   const [edit, setEdit] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [first, setFirst] = useState(1);
-  const [rows, setRows] = useState(50);
+  const [rows, setRows] = useState(10);
   const [id, setId] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [name, setName] = useState("");
@@ -254,6 +254,12 @@ const ProductScreen = () => {
     setImages((current) => [...current, image]);
     setImage("");
     e.preventDefault();
+  };
+
+  const onPageChange = (event) => {
+    setFirst(event.first);
+    setRows(event.rows);
+    setPageNumber(event.page + 1);
   };
 
   const deleteHandler = (id) => {
@@ -504,6 +510,12 @@ const ProductScreen = () => {
                 </>
               )}
             </table>
+            <Paginator
+              first={first}
+              rows={rows}
+              totalRecords={count}
+              onPageChange={onPageChange}
+            />
           </CardBody>
         </Card>
       </div>

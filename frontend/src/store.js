@@ -38,6 +38,13 @@ import {
   productListReducer1,
 } from "./reducers/productReducers";
 
+import {
+  slideListReducer,
+  slideCreateReducer,
+  slideUpdateReducer,
+  sildeDetailsReducer,
+} from "./reducers/slideReducers";
+
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
@@ -68,6 +75,12 @@ const reducer = combineReducers({
   productCreate: productCreateReducer,
   productUpdate: productUpdateReducer,
   productReview: productReviewReducer,
+
+
+  slideList: slideListReducer,
+  sildeDetails: sildeDetailsReducer,
+  slideUpdate: slideUpdateReducer,
+  slideCreate: slideCreateReducer,
 });
 
 const userInfoFormStorage = localStorage.getItem("userInfo-nasiib")
