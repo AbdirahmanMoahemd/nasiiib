@@ -253,8 +253,9 @@ export const updateProfile = asyncHandler(async (req, res) => {
 // @desc    Update user password
 // @route   PUT /api/users/password
 // @access  Private
-export const updateUserPassword = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+export const updateUserPasswordApp = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).populate("cart.product")
+  .populate("wishlist.product");;
 
   if (user) {
     user.password = req.body.password;
@@ -263,14 +264,16 @@ export const updateUserPassword = asyncHandler(async (req, res) => {
 
     res.json({
       _id: updatedUser._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      phone: user.phone,
-      address: user.address,
-      city: user.city,
-      country: user.country,
-      token: generateToken(user._id),
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      phone: updatedUser.phone,
+      address: updatedUser.address,
+      city: updatedUser.city,
+      country: updatedUser.country,
+      token: updatedUser.token,
+      cart: updatedUser.cart,
+      wishlist: updatedUser.wishlist,
     });
   } else {
     res.status(404).json({ msg: "User Not Found" });
