@@ -17,6 +17,8 @@ import SubCategoryScreen from "./pages/dashboard/subcategoryScreen";
 import OrdersScreen from "./pages/dashboard/ordersScreen";
 import SliderScreen from "./pages/dashboard/sliderScreen";
 import SettingsScreen from "./pages/dashboard/settingsScreen";
+import UsersScreen from "./pages/dashboard/usersScreen";
+import { FaUsers } from "react-icons/fa";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -67,6 +69,12 @@ export const routes = [
         name: "settings",
         path: "/settings",
         element: <SettingsScreen />,
+      },
+      {
+        icon: <FaUsers {...icon} />,
+        name: "users",
+        path: "/users",
+        element: <UsersScreen />,
       },
     ],
   },
