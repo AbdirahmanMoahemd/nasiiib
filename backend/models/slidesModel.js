@@ -1,10 +1,9 @@
 import mongoose from 'mongoose'
 
 const slideSchema = mongoose.Schema({
-    image: {
-        type: String,
-        required: true,
-    },
+    images:[{
+        type : String,
+    }],
 }, {
     timestamps: true
 })

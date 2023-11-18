@@ -21,7 +21,7 @@ export const listSlides = () => async (dispatch) => {
   try {
     dispatch({ type: SLIDE_LIST_REQUEST });
 
-    const { data } = await axios.get("/api/slides");
+    const { data } = await axios.get("/api/sliders");
 
     dispatch({
       type: SLIDE_LIST_SUCCESS,
@@ -54,7 +54,7 @@ export const deleteSlide = (id) => async (dispatch, getState) => {
       },
     };
 
-    await axios.delete(`/api/slides/${id}`, config);
+    await axios.delete(`/api/sliders/${id}`, config);
 
     dispatch({
       type: SLIDE_DELETE_SUCCESS,
@@ -87,7 +87,7 @@ export const getSlideDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`/api/slides/${id}`, config);
+    const { data } = await axios.get(`/api/sliders/${id}`, config);
 
     dispatch({
       type: SLIDE_DETAILS_SUCCESS,
@@ -120,7 +120,7 @@ export const updateSlide = (slide) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put(`/api/slides/${slide._id}`, slide, config);
+    const { data } = await axios.put(`/api/sliders/${slide._id}`, slide, config);
 
     dispatch({
       type: SLIDE_UPDATE_SUCCESS,
@@ -137,7 +137,7 @@ export const updateSlide = (slide) => async (dispatch, getState) => {
   }
 };
 
-export const createSlide = (image) => async (dispatch, getState) => {
+export const createSlide = (images) => async (dispatch, getState) => {
   try {
     dispatch({
       type: SLIDE_CREATE_REQUEST,
@@ -153,7 +153,7 @@ export const createSlide = (image) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/slides`, { image }, config);
+    const { data } = await axios.post(`/api/sliders`, { images }, config);
 
     dispatch({
       type: SLIDE_CREATE_SUCCESS,
