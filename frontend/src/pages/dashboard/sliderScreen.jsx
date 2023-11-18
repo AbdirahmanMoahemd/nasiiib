@@ -82,6 +82,11 @@ const SliderScreen = () => {
 
     if (successUpdate) {
       dispatch({ type: SLIDE_UPDATE_RESET });
+      setCreate(false);
+      setEdit(false);
+      setId("");
+      setImages([]);
+      setImage("");
     }
   }, [dispatch, navigate, userInfo, successCreate, successUpdate]);
 
@@ -177,54 +182,72 @@ const SliderScreen = () => {
           )}
           {errorDelete && <Message severity="error" text={errorDelete} />} */}
           <CardBody className="table-wrp block max-h-screen overflow-x-scroll px-0 pt-0 pb-2">
-            {loading ? (
-              <ProgressSpinner
-                style={{ width: "20px", height: "20px" }}
-                strokeWidth="6"
-                fill="var(--surface-ground)"
-                animationDuration=".5s"
-              />
-            ) : error ? (
-              <Message variant="danger">{error}</Message>
-            ) : (
-              <>
-              {slides.map((slide) => (
-                    <>
-                <Swiper
-                  style={{
-                    "--swiper-navigation-color": "#E49A38",
-                    "--swiper-navigation-size": "35px",
-                  }}
-                  spaceBetween={100}
-                  centeredSlides={true}
-                  autoplay={{
-                    delay: 2000,
-                  }}
-                  pagination={{
-                    clickable: true,
-                  }}
-                  navigation={true}
-                  modules={[Autoplay, Pagination, Navigation]}
-                  className="mySwiper  "
-                >
-                  
-                      {slide.images &&
-                        slide.images.map((image) => (
-                          <SwiperSlide>
-                            <img
-                              className="h-[100%] w-full object-fill"
-                              src={image && image}
-                              alt="image slide 1"
-                            />
-                          </SwiperSlide>
-                        
+            <table className="w-full min-w-[640px] table-auto">
+              <thead className="sticky top-0 z-40 border-b bg-white">
+                <tr>
+                  {["Images"].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-6 text-left"
+                    >
+                      <Typography
+                        variant="small"
+                        className="text-[11px] font-medium uppercase text-blue-gray-600"
+                      >
+                        {el}
+                      </Typography>
+                    </th>
                   ))}
-                </Swiper>
-                </>
-                ))}
-                    
-              </>
-            )}
+                </tr>
+              </thead>
+              {loading ? (
+                <ProgressSpinner
+                  style={{ width: "20px", height: "20px" }}
+                  strokeWidth="6"
+                  fill="var(--surface-ground)"
+                  animationDuration=".5s"
+                />
+              ) : error ? (
+                <Message variant="danger">{error}</Message>
+              ) : (
+                <tbody className="overflow-y-auto">
+                  {slides.map((slide) => (
+                    <tr key={slide.id}>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          <div className="grid gap-y-10 gap-x-6 p-2 md:grid-cols-2 xl:grid-cols-3">
+                            {slide.images &&
+                              slide.images.map((image) => (
+                                // <SwiperSlide>
+                                <img
+                                  className="h-28 w-full object-fill"
+                                  src={image && image}
+                                  alt="image slide 1"
+                                />
+                                // </SwiperSlide>
+                              ))}
+                          </div>
+                        </Typography>
+                      </td>
+                      <td>
+                        <Button
+                          label=""
+                          icon="pi pi-file-edit"
+                          onClick={() => {
+                            setId(slide._id);
+                            setImages(slide.images);
+                            setEdit(true);
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
+            </table>
           </CardBody>
         </Card>
       </div>
@@ -232,7 +255,7 @@ const SliderScreen = () => {
       <Dialog
         blockScroll="false"
         aria-expanded={create ? true : false}
-        header="New image"
+        header="New slider image"
         visible={create}
         onHide={() => {
           setCreate(false);
@@ -323,6 +346,105 @@ const SliderScreen = () => {
               className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-white transition hover:bg-transparent hover:text-primary"
             >
               Save
+            </button>
+          </div>
+        </form>
+      </Dialog>
+
+      <Dialog
+        blockScroll="false"
+        aria-expanded={edit ? true : false}
+        header="Edit slider image"
+        visible={edit}
+        onHide={() => {
+          setEdit(false);
+        }}
+        style={{ width: "40vw" }}
+        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+      >
+        <form onSubmit={updateHandler}>
+          {loadingCreate && (
+            <ProgressSpinner
+              style={{ width: "20px", height: "20px" }}
+              strokeWidth="6"
+              fill="var(--surface-ground)"
+              animationDuration=".5s"
+            />
+          )}
+          {errorCreate && <Message severity="error" text={errorCreate} />}
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-gray-600">
+                Select image <span className="text-primary">*</span>
+              </label>
+              <input
+                value={image}
+                id="icon"
+                type="text"
+                className="input-box"
+                onChange={(e) => setImage(e.target.value)}
+                placeholder="Select image"
+              />
+              <br />
+
+              <input
+                type="file"
+                id="myfile"
+                name="myfile"
+                onChange={uploadFileHandler}
+              />
+              {uploading && (
+                <ProgressSpinner
+                  style={{ width: "20px", height: "20px" }}
+                  strokeWidth="4"
+                  fill="var(--surface-ground)"
+                  animationDuration=".5s"
+                />
+              )}
+            </div>
+            <div>
+              <Button
+                className="bg-primary text-white"
+                icon="pi pi-plus"
+                aria-label="Filter"
+                onClick={addimagehandler}
+              />
+            </div>
+          </div>
+          <div className="flex w-20 pl-2">
+            {images.map((img, index) => (
+              <>
+                <img src={img} className="h-54 w-54" />
+                <button>
+                  <AiFillDelete
+                    className="text-primary"
+                    onClick={() => {
+                      setImages(images.splice(index, 1));
+                    }}
+                  />
+                </button>
+              </>
+            ))}
+            {images.length === "" ? (
+              ""
+            ) : (
+              <button
+                className="ml-4"
+                onClick={(e) => {
+                  setImages([]);
+                  e.preventDefault();
+                }}
+              >
+                clear
+              </button>
+            )}
+          </div>
+          <div className="mt-4 flex justify-center">
+            <button
+              type="submit"
+              className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-white transition hover:bg-transparent hover:text-primary"
+            >
+              Update
             </button>
           </div>
         </form>
