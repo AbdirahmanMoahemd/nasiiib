@@ -125,14 +125,14 @@ const ProductScreen = () => {
       setNewPrice(0);
       setisDiscounted(false);
       setisFeatured(true);
-      setImages([])
-      setImage("")
-      setSizes([])
-      setColors([])
-      setCountInStock(0)
-      setTemSizes("")
-      setCategory("")
-      setSubCategory("")
+      setImages([]);
+      setImage("");
+      setSizes([]);
+      setColors([]);
+      setCountInStock(0);
+      setTemSizes("");
+      setCategory("");
+      setSubCategory("");
     }
 
     if (successUpdate) {
@@ -210,8 +210,6 @@ const ProductScreen = () => {
         newPrice,
       })
     );
-    
-
   };
 
   const uploadFileHandler = async (e) => {
@@ -254,6 +252,12 @@ const ProductScreen = () => {
     setImages((current) => [...current, image]);
     setImage("");
     e.preventDefault();
+  };
+
+  const removeElement = (index) => {
+    const newArray = [...images]; // Create a copy of the original array
+    newArray.splice(index, 1); // Remove one element at the specified index
+    setImages(newArray); // Update the state with the modified array
   };
 
   const onPageChange = (event) => {
@@ -526,7 +530,25 @@ const ProductScreen = () => {
         header="New product item"
         visible={create}
         onHide={() => {
+          dispatch({ type: PRODUCT_CREATE_RESET });
           setCreate(false);
+          setId("");
+          setName("");
+          setBrand("");
+          setDescription("");
+          setMainDescription("");
+          setPrice(0);
+          setNewPrice(0);
+          setisDiscounted(false);
+          setisFeatured(true);
+          setImages([]);
+          setImage("");
+          setSizes([]);
+          setColors([]);
+          setCountInStock(0);
+          setTemSizes("");
+          setCategory("");
+          setSubCategory("");
         }}
         style={{ width: "40vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
@@ -609,9 +631,7 @@ const ProductScreen = () => {
                   <button>
                     <AiFillDelete
                       className="text-primary"
-                      onClick={() => {
-                        setImages(images.splice(index, 1));
-                      }}
+                      onClick={() => removeElement(index)}
                     />
                   </button>
                 </>

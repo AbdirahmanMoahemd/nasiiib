@@ -24,7 +24,10 @@ import {
   deleteCategory,
   listCategories,
 } from "../../actions/categoryActions";
-import { CATEGORY_CREATE_RESET } from "@/constants/categoryConstants";
+import {
+  CATEGORY_CREATE_RESET,
+  CATEGORY_UPDATE_RESET,
+} from "@/constants/categoryConstants";
 import { confirmAlert } from "react-confirm-alert";
 import { Paginator } from "primereact/paginator";
 
@@ -60,6 +63,13 @@ const CategoryScreen = () => {
     success: successDelete,
   } = categoryDelete;
 
+  const categoryUpdate = useSelector((state) => state.categoryUpdate);
+  const {
+    loading: loadingUpdate,
+    error: errorUpdate,
+    success: successUpdate,
+  } = categoryUpdate;
+
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
       navigate("/sign-in");
@@ -74,8 +84,17 @@ const CategoryScreen = () => {
       setUploading(false);
     }
 
+    if (successUpdate) {
+      dispatch({ type: CATEGORY_UPDATE_RESET });
+      setCreate(false);
+      setName();
+      setIcon();
+      setEdit();
+      setUploading(false);
+    }
+
     dispatch(listCategories());
-  }, [dispatch, navigate, successCreate, successDelete]);
+  }, [dispatch, navigate, successCreate, successUpdate, successDelete]);
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
@@ -119,7 +138,6 @@ const CategoryScreen = () => {
       ],
     });
   };
-
 
   const updateHandler = (e) => {
     dispatch(
@@ -233,10 +251,10 @@ const CategoryScreen = () => {
                             icon="pi pi-file-edit"
                             className="h-8"
                             onClick={() => {
-                              setId(category.id)
-                              setName(category.name)
-                              setIcon(category.icon)
-                              setEdit(true)
+                              setId(category.id);
+                              setName(category.name);
+                              setIcon(category.icon);
+                              setEdit(true);
                             }}
                           />
                         </td>
@@ -264,7 +282,12 @@ const CategoryScreen = () => {
         header="New Category item"
         visible={create}
         onHide={() => {
+          dispatch({ type: CATEGORY_CREATE_RESET });
           setCreate(false);
+          setName();
+          setIcon();
+          setEdit();
+          setUploading(false);
         }}
         style={{ width: "40vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
@@ -328,7 +351,7 @@ const CategoryScreen = () => {
             <div className="mt-4 flex justify-center">
               <button
                 type="submit"
-                className="text-white bg-primary border-primary hover:text-primary font-roboto rounded border py-2 px-10 text-center font-medium uppercase transition hover:bg-transparent"
+                className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-white transition hover:bg-transparent hover:text-primary"
               >
                 Save
               </button>
@@ -344,7 +367,12 @@ const CategoryScreen = () => {
         header="Edit category item"
         visible={edit}
         onHide={() => {
-          setEdit(false);
+          dispatch({ type: CATEGORY_UPDATE_RESET });
+          setCreate(false);
+          setName();
+          setIcon();
+          setEdit();
+          setUploading(false);
         }}
         style={{ width: "40vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
@@ -408,7 +436,7 @@ const CategoryScreen = () => {
             <div className="mt-4 flex justify-center">
               <button
                 type="submit"
-                className="text-white bg-primary border-primary hover:text-primary font-roboto rounded border py-2 px-10 text-center font-medium uppercase transition hover:bg-transparent"
+                className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-white transition hover:bg-transparent hover:text-primary"
               >
                 Update
               </button>

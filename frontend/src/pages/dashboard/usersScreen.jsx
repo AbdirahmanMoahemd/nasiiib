@@ -61,7 +61,7 @@ const UsersScreen = () => {
   } = userRegister;
 
   useEffect(() => {
-    if (!userInfo) {
+    if (!userInfo && !userInfo.isAdmin) {
       navigate("/sign-in");
     }
     if (successCreate) {

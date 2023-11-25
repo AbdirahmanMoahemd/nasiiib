@@ -18,7 +18,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import {  listCategories } from "../../actions/categoryActions";
+import { listCategories } from "../../actions/categoryActions";
 import { confirmAlert } from "react-confirm-alert";
 import {
   createSubCategory,
@@ -26,7 +26,10 @@ import {
   listSubCategories,
   updateSubCategory,
 } from "@/actions/subCategoryActions";
-import { SUBCATEGORY_CREATE_RESET, SUBCATEGORY_UPDATE_RESET } from "@/constants/subCategoryConstants";
+import {
+  SUBCATEGORY_CREATE_RESET,
+  SUBCATEGORY_UPDATE_RESET,
+} from "@/constants/subCategoryConstants";
 
 const SubCategoryScreen = () => {
   const [keyword, setKeyword] = useState("");
@@ -70,15 +73,12 @@ const SubCategoryScreen = () => {
   } = subcategoryUpdate;
 
   useEffect(() => {
-    
     if (!userInfo && !userInfo.isAdmin) {
       navigate("/sign-in");
     }
-    dispatch(listSubCategories());
-    dispatch(listCategories());
 
     if (successCreate) {
-      dispatch({type: SUBCATEGORY_CREATE_RESET})
+      dispatch({ type: SUBCATEGORY_CREATE_RESET });
       setCreate(false);
       setName("");
       setCategory("");
@@ -91,6 +91,9 @@ const SubCategoryScreen = () => {
       setName("");
       setCategory("");
     }
+
+    dispatch(listSubCategories());
+    dispatch(listCategories());
   }, [dispatch, navigate, successCreate, successUpdate, successDelete]);
 
   const submitHandler = (e) => {
@@ -262,7 +265,10 @@ const SubCategoryScreen = () => {
         header="New SubCategory item"
         visible={create}
         onHide={() => {
+          dispatch({ type: SUBCATEGORY_CREATE_RESET });
           setCreate(false);
+          setName("");
+          setCategory("");
         }}
         style={{ width: "40vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
@@ -296,7 +302,7 @@ const SubCategoryScreen = () => {
               <select
                 name="category"
                 type="text"
-                className="w-full border border-gray-400 py-3 px-1 rounded"
+                className="w-full rounded border border-gray-400 py-3 px-1"
                 value={category}
                 required
                 onChange={(e) => setCategory(e.target.value)}
@@ -331,7 +337,11 @@ const SubCategoryScreen = () => {
         header="Edit SubCategory item"
         visible={edit}
         onHide={() => {
+          dispatch({ type: SUBCATEGORY_UPDATE_RESET });
+          setCreate(false);
           setEdit(false);
+          setName("");
+          setCategory("");
         }}
         style={{ width: "40vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
@@ -394,7 +404,7 @@ const SubCategoryScreen = () => {
               <div className="mt-4 flex justify-center">
                 <button
                   type="submit"
-                  className="text-white font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase transition hover:bg-transparent hover:text-primary"
+                  className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-white transition hover:bg-transparent hover:text-primary"
                 >
                   Update
                 </button>

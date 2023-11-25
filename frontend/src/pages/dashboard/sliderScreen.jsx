@@ -66,11 +66,12 @@ const SliderScreen = () => {
   } = slideUpdate;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listSlides());
-    } else {
-      navigate("/login");
+    if (!userInfo && !userInfo.isAdmin) {
+      navigate("/sign-in");
     }
+   
+    
+    
 
     if (successCreate) {
       dispatch({ type: SLIDE_CREATE_RESET });
@@ -88,6 +89,8 @@ const SliderScreen = () => {
       setImages([]);
       setImage("");
     }
+
+    dispatch(listSlides());
   }, [dispatch, navigate, userInfo, successCreate, successUpdate]);
 
   const submitHandler = (e) => {
@@ -104,6 +107,12 @@ const SliderScreen = () => {
     setImages((current) => [...current, image]);
     setImage("");
     e.preventDefault();
+  };
+
+  const removeElement = (index) => {
+    const newArray = [...images]; // Create a copy of the original array
+    newArray.splice(index, 1); // Remove one element at the specified index
+    setImages(newArray); // Update the state with the modified array
   };
 
   const uploadFileHandler = async (e) => {
@@ -315,13 +324,11 @@ const SliderScreen = () => {
           <div className="flex w-20 pl-2">
             {images.map((img, index) => (
               <>
-                <img src={img} className="h-54 w-54" />
+                <img src={img} className="h-54 w-54" alt="image"/>
                 <button>
                   <AiFillDelete
                     className="text-primary"
-                    onClick={() => {
-                      setImages(images.splice(index, 1));
-                    }}
+                    onClick={() => removeElement(index)}
                   />
                 </button>
               </>
@@ -429,7 +436,7 @@ const SliderScreen = () => {
               ""
             ) : (
               <button
-                className="ml-4"
+                className="ml-8"
                 onClick={(e) => {
                   setImages([]);
                   e.preventDefault();
