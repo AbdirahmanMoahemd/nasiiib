@@ -1,6 +1,10 @@
 import asyncHandler from "express-async-handler";
 import generateToken from "../utils/generateToken.js";
 import User from "../models/userModel.js";
+import nodemailer from "nodemailer";
+import Mailgen from "mailgen";
+import crypto from "crypto";
+import twilio from 'twilio'
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -174,6 +178,65 @@ export const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+export const generateOtp = asyncHandler(async (req, res) => {
+  // const { email } = req.body;
+  const otp = crypto.randomInt(100000, 999999).toString();
+
+  // Store the OTP in memory (You might want to use a database in a production environment)
+  // users[email] = { otp };
+
+  // Configure Nodemailer to send emails
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: 'kaah6978@gmail.com',
+    subject: "Your OTP for Verification",
+    text: `Your OTP is: ${otp}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send("Failed to send OTP.");
+    } else {
+      console.log(`Email sent: ${info.response}`);
+      res.status(200).send("OTP sent successfully.");
+    }
+  });
+});
+
+
+export const generateSMS = asyncHandler(async (req, res) => {
+  const accountSid = 'AC2ca03b31856506fbcbd7ffc4610f6e6d';
+  const authToken = '815d306399358144746d26d09b9f7dd1';
+  const client = twilio(accountSid, authToken);
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Store the OTP in memory (You might want to use a database in a production environment)
+  // users[phoneNumber] = { otp };
+
+  try {
+    // Send OTP via Twilio
+    await client.messages.create({
+      body: `You are under arrest`,
+      from: '+15702442046',
+      to: '+252617697873',
+    });
+
+    res.status(200).send('OTP sent successfully.');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Failed to send OTP.');
+  }
+});
+
 // @desc    Update user profile
 // @route   PUT /api/users/profile
 // @access  Private
@@ -254,8 +317,9 @@ export const updateProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/password
 // @access  Private
 export const updateUserPasswordApp = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).populate("cart.product")
-  .populate("wishlist.product");;
+  const user = await User.findById(req.params.id)
+    .populate("cart.product")
+    .populate("wishlist.product");
 
   if (user) {
     user.password = req.body.password;

@@ -13,6 +13,7 @@ import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import slidesRoutes from "./routes/slidesRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -31,6 +32,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/sliders", slidesRoutes);
 app.use('/api/settings', settingsRoutes); 
+app.use('/api/orders', orderRoutes); 
 
 
 

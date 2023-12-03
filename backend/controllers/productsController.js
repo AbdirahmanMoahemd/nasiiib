@@ -257,7 +257,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     isDiscounted,
     newPrice,
     countInStock,
-    isFeatured,
+    isFeatured
   } = req.body;
 
   const product = await Product.findById(req.params.id);
@@ -277,10 +277,9 @@ export const updateProduct = asyncHandler(async (req, res) => {
     product.isDiscounted = isDiscounted;
     product.newPrice = newPrice;
     product.countInStock = countInStock;
-
     const updatedProduct = await product.save();
     res.json({
-      updatedProduct,
+      updatedProduct,  
     });
   } else {
     res.status(404);
