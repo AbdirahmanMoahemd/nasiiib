@@ -8,7 +8,7 @@ import {
 import { protect, admin } from "../middlewares/authMiddleware.js";
 
 router.route("/").post(protect, addOrderItems).get(protect, admin, getOrders);
-router.route("/app").post(protect, addOrderItems2)
+router.route("/app").post(addOrderItems2)
 
 
 export default router;

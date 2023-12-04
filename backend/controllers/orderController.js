@@ -205,7 +205,7 @@ export const addOrderItems2 = asyncHandler(async (req, res) => {
     let products = [];
 
     for (let i = 0; i < cartproducts.length; i++) {
-      let product = await Product.findById(cartproducts[i].product._id);
+      let product = await Product.findById(cartproducts[i].product.id);
       if (product) {
         if (product.countInStock >= cartproducts[i].quantity) {
           product.countInStock -= cartproducts[i].quantity;
@@ -222,10 +222,10 @@ export const addOrderItems2 = asyncHandler(async (req, res) => {
         } else {
           return res
             .status(400)
-            .json({ msg: `${product.name} is out of stock!` });
+            .json({ message: `${product.name} is out of stock!` });
         }
       } else {
-        return res.status(404).json({ msg: `not found!` });
+        return res.status(404).json({ message: `not found!` });
       }
     }
 
