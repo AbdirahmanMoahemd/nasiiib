@@ -10,7 +10,7 @@ import { protect, admin } from "../middlewares/authMiddleware.js";
 
 router.route("/").post(protect, addOrderItems).get(protect, admin, getOrders);
 router.route("/app").post(protect, addOrderItems2)
-router.route("/app/myorders").post(protect, getMyOrdersApp)
+router.route("/app/myorders/:id").post(protect, getMyOrdersApp)
 
 
 export default router;

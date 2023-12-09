@@ -471,7 +471,7 @@ export const getRecentOrders2 = asyncHandler(async (req, res) => {
 // @access  Private
 export const getMyOrdersApp = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id })
+    const orders = await Order.find({ user: req.params.id })
       .populate("user")
       .populate("products.product")
       .sort({ createdAt: -1 });
