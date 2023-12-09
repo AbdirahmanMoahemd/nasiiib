@@ -117,7 +117,6 @@ export const addOrderItemsEvc = asyncHandler(async (req, res) => {
     throw new Error("No order items");
     return;
   } else {
-    
     const order = new Order({
       products,
       user: req.user._id,
@@ -229,7 +228,6 @@ export const addOrderItems2 = asyncHandler(async (req, res) => {
       }
     }
 
-
     let user = await User.findById(req.user);
     user.cart = [];
     user = await user.save();
@@ -317,6 +315,7 @@ export const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id)
     .populate("user")
     .populate("products.product")
+    .sort({ createdAt: -1 });
   if (order) {
     res.json(order);
   } else {
@@ -397,6 +396,7 @@ export const getMyOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id })
     .populate("user")
     .populate("products.product")
+    .sort({ createdAt: -1 });
   res.json(orders);
 });
 
@@ -435,7 +435,7 @@ export const getOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({})
     .populate("user")
     .populate("products.product")
-  orders.sort((a, b) => (a._id > b._id ? -1 : 1));
+    .sort({ createdAt: -1 });
   res.json(orders);
 });
 
@@ -448,7 +448,8 @@ export const getRecentOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ createdAt: { $gte: start } })
     .populate("user")
     .populate("products.product")
-  orders.sort((a, b) => (a._id > b._id ? -1 : 1));
+    .sort({ createdAt: -1 });
+
   res.json(orders);
 });
 
@@ -461,7 +462,7 @@ export const getRecentOrders2 = asyncHandler(async (req, res) => {
   const orders = await Order.find({ createdAt: { $gte: start } })
     .populate("user")
     .populate("products.product")
-  orders.sort((a, b) => (a._id > b._id ? -1 : 1));
+    .sort({ createdAt: -1 });
   res.json(orders);
 });
 
@@ -473,7 +474,7 @@ export const getMyOrdersApp = asyncHandler(async (req, res) => {
     const orders = await Order.find({ user: req.user._id })
       .populate("user")
       .populate("products.product")
-    orders.sort((a, b) => (a._id > b._id ? -1 : 1));
+      .sort({ createdAt: -1 });
     res.json(orders);
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -492,6 +493,7 @@ export const getOrdersByPhone = asyncHandler(async (req, res) => {
     const orders = await Order.find({ user: user })
       .populate("user")
       .populate("products.product")
+      .sort({ createdAt: -1 });
     res.json(orders);
   }
 });
@@ -504,9 +506,9 @@ export const getOrdersByPendding = asyncHandler(async (req, res) => {
     const orders = await Order.find({ status: 0 })
       .populate("user")
       .populate("products.product")
+      .sort({ createdAt: -1 });
 
     if (orders) {
-      orders.sort((a, b) => (a._id > b._id ? -1 : 1));
       res.json(orders);
     }
   } catch (e) {
@@ -522,8 +524,8 @@ export const getOrdersByProcess = asyncHandler(async (req, res) => {
     const orders = await Order.find({ status: 1 })
       .populate("user")
       .populate("products.product")
+      .sort({ createdAt: -1 });
     if (orders) {
-      orders.sort((a, b) => (a._id > b._id ? -1 : 1));
       res.json(orders);
     }
   } catch (e) {
@@ -539,8 +541,8 @@ export const getOrdersByComplete = asyncHandler(async (req, res) => {
     const orders = await Order.find({ status: 3 })
       .populate("user")
       .populate("products.product")
+      .sort({ createdAt: -1 });
     if (orders) {
-      orders.sort((a, b) => (a._id > b._id ? -1 : 1));
       res.json(orders);
     }
   } catch (e) {
@@ -555,7 +557,7 @@ export const getAllOrdersApp = asyncHandler(async (req, res) => {
   const orders = await Order.find({})
     .populate("user")
     .populate("products.product")
-  orders.sort((a, b) => (a._id > b._id ? -1 : 1));
+    .sort({ createdAt: -1 });
   res.json(orders);
 });
 

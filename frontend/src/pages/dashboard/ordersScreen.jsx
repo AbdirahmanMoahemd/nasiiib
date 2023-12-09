@@ -19,114 +19,33 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import {
-  createCategory,
-  deleteCategory,
-  listCategories,
-} from "../../actions/categoryActions";
-import { CATEGORY_CREATE_RESET } from "@/constants/categoryConstants";
 import { confirmAlert } from "react-confirm-alert";
+import { listOrders } from "@/actions/orderActions";
+import moment from "moment";
 
 const OrdersScreen = () => {
   const [keyword, setKeyword] = useState("");
   const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [icon, setIcon] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [create, setCreate] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const navigate = useNavigate();
+  const [phone, setPhone] = useState("");
 
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
+  const orderList = useSelector((state) => state.orderList);
+  const { loading, error, orders } = orderList;
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
-  const categoryCreate = useSelector((state) => state.categoryCreate);
-  const {
-    loading: loadingCreate,
-    error: errorCreate,
-    success: successCreate,
-  } = categoryCreate;
-
-  const categoryList = useSelector((state) => state.categoryList);
-  const { loading, error, categories } = categoryList;
-
-  const categoryDelete = useSelector((state) => state.categoryDelete);
-  const {
-    loading: loadingDelete,
-    error: errorDelete,
-    success: successDelete,
-  } = categoryDelete;
 
   useEffect(() => {
     if (!userInfo && !userInfo.isAdmin) {
       navigate("/sign-in");
     }
+    dispatch(listOrders());
+  }, [dispatch, navigate, userInfo]);
 
-    if (successCreate) {
-      dispatch({ type: CATEGORY_CREATE_RESET });
-      setCreate(false);
-      setName();
-      setIcon();
-      setEdit();
-      setUploading(false);
-    }
-
-    dispatch(listCategories());
-  }, [dispatch, navigate, successCreate, successDelete]);
-
-  const uploadFileHandler = async (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("image", file);
-    setUploading(true);
-
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-      const { data } = await axios.post("/api/upload", formData, config);
-      setIcon(data);
-      console.log(data);
-      setUploading(false);
-    } catch (error) {
-      console.error(error);
-      setUploading(false);
-    }
-  };
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(createCategory(name, icon));
-  };
-
-  const deleteHandler = (id) => {
-    confirmAlert({
-      title: "Permanent Delete",
-      message: "Are You Sure?",
-      buttons: [
-        {
-          label: "No",
-        },
-        {
-          label: "Yes",
-          onClick: () => dispatch(deleteCategory(id)),
-        },
-      ],
-    });
-  };
-
-  const updateHandler = (e) => {
-    dispatch(
-      updateCategory({
-        _id: id,
-        name,
-        icon,
-      })
-    );
+  const submitHanller = (e) => {
     e.preventDefault();
   };
 
@@ -171,15 +90,6 @@ const OrdersScreen = () => {
               </MenuList>
             </Menu>
           </CardHeader>
-          {loadingDelete && (
-            <ProgressSpinner
-              style={{ width: "20px", height: "20px" }}
-              strokeWidth="6"
-              fill="var(--surface-ground)"
-              animationDuration=".5s"
-            />
-          )}
-          {errorDelete && <Message severity="error" text={errorDelete} />}
           <CardBody className="table-wrp block max-h-screen overflow-x-scroll px-0 pt-0 pb-2">
             <table className="w-full min-w-[640px] table-auto">
               <thead className="sticky top-0 z-40 border-b bg-white">
@@ -208,169 +118,113 @@ const OrdersScreen = () => {
                   ))}
                 </tr>
               </thead>
+              {loading ? (
+                <ProgressSpinner
+                  style={{ width: "20px", height: "20px" }}
+                  strokeWidth="6"
+                  fill="var(--surface-ground)"
+                  animationDuration=".5s"
+                />
+              ) : error ? (
+                <Message severity="error" text={error} />
+              ) : (
+                <tbody>
+                  {orders.map((order) => (
+                    <tr key={order.id}>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order._id && order._id.substring(0, 15)}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.user && order.user.name}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.user && order.user.phone}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order &&
+                            moment(order.createdAt).toString().substring(0, 21)}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.paymentMethod}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          ${order.totalPrice}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.isPaid ? (
+                            order.paidAt.substring(0, 10)
+                          ) : (
+                            <i
+                              className="fa fa-times"
+                              style={{ color: "red" }}
+                            ></i>
+                          )}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.isDelivered ? (
+                            order.deliveredAt.substring(0, 10)
+                          ) : (
+                            <i
+                              className="fa fa-times"
+                              style={{ color: "red" }}
+                            ></i>
+                          )}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Button
+                          label=""
+                          icon="pi pi-file-edit"
+                          className="h-8"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
             </table>
           </CardBody>
         </Card>
       </div>
-      {/* Create Inventory */}
-      <Dialog
-        blockScroll="false"
-        aria-expanded={create ? true : false}
-        header="New Category item"
-        visible={create}
-        onHide={() => {
-          setCreate(false);
-        }}
-        style={{ width: "40vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-      >
-        <form onSubmit={submitHandler}>
-          {loadingCreate && (
-            <ProgressSpinner
-              style={{ width: "20px", height: "20px" }}
-              strokeWidth="6"
-              fill="var(--surface-ground)"
-              animationDuration=".5s"
-            />
-          )}
-          {errorCreate && <Message severity="error" text={errorCreate} />}
-          <div className="space-y-4">
-            <div>
-              <label className="mb-2 block text-gray-600">
-                Category Name<span className="text-primary">*</span>
-              </label>
-              <Input
-                type="text"
-                value={name}
-                label="Item name"
-                size="lg"
-                required
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-gray-600">
-                Select image <span className="text-primary">*</span>
-              </label>
-              <Input
-                type="text"
-                value={icon}
-                label="Category image"
-                size="lg"
-                required
-                onChange={(e) => setIcon(e.target.value)}
-              />
-              <br />
-
-              <input
-                type="file"
-                id="myfile"
-                name="myfile"
-                onChange={uploadFileHandler}
-              />
-              {uploading && (
-                <ProgressSpinner
-                  style={{ width: "20px", height: "20px" }}
-                  strokeWidth="4"
-                  fill="var(--surface-ground)"
-                  animationDuration=".5s"
-                />
-              )}
-            </div>
-            <div className="flex w-20 pl-2">
-              <img src={icon} />
-            </div>
-            <div className="mt-4 flex justify-center">
-              <button
-                type="submit"
-                className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-primary transition hover:bg-transparent hover:text-primary"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </form>
-      </Dialog>
-
-      {/* Edit Category */}
-      <Dialog
-        blockScroll="false"
-        aria-expanded={edit ? true : false}
-        header="Edit category item"
-        visible={edit}
-        onHide={() => {
-          setEdit(false);
-        }}
-        style={{ width: "40vw" }}
-        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-      >
-        <form onSubmit={submitHandler}>
-          {loadingCreate && (
-            <ProgressSpinner
-              style={{ width: "20px", height: "20px" }}
-              strokeWidth="6"
-              fill="var(--surface-ground)"
-              animationDuration=".5s"
-            />
-          )}
-          {errorCreate && <Message severity="error" text={errorCreate} />}
-          <div className="space-y-4">
-            <div>
-              <label className="mb-2 block text-gray-600">
-                Category Name<span className="text-primary">*</span>
-              </label>
-              <Input
-                type="text"
-                value={name}
-                label="Item name"
-                size="lg"
-                required
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-gray-600">
-                Select image <span className="text-primary">*</span>
-              </label>
-              <Input
-                type="text"
-                value={icon}
-                label="Category image"
-                size="lg"
-                required
-                onChange={(e) => setIcon(e.target.value)}
-              />
-              <br />
-
-              <input
-                type="file"
-                id="myfile"
-                name="myfile"
-                onChange={uploadFileHandler}
-              />
-              {uploading && (
-                <ProgressSpinner
-                  style={{ width: "20px", height: "20px" }}
-                  strokeWidth="4"
-                  fill="var(--surface-ground)"
-                  animationDuration=".5s"
-                />
-              )}
-            </div>
-            <div className="flex w-20 pl-2">
-              <img src={icon} />
-            </div>
-            <div className="mt-4 flex justify-center">
-              <button
-                type="submit"
-                className="font-roboto rounded border border-primary bg-primary py-2 px-10 text-center font-medium uppercase text-white transition hover:bg-transparent hover:text-primary"
-              >
-                Update
-              </button>
-            </div>
-          </div>
-        </form>
-      </Dialog>
     </>
   );
 };

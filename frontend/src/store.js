@@ -51,6 +51,19 @@ import {
   settingsUpdateReducer,
 } from "./reducers/settingsReducers.js";
 
+import {
+  orderCreateReducer,
+  orderCreateReducerEvc,
+  orderDeliverReducer,
+  orderDetailsReducer,
+  orderListReducer,
+  orderMyListReducer,
+  orderPayReducer,
+  orderPayReducer2,
+  orderReducerCount,
+  recentOrderListReducer,
+} from "./reducers/orderReducers";
+
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
@@ -91,6 +104,17 @@ const reducer = combineReducers({
   settingsDetails: settingsDetailsReducer,
   settingsUpdate: settingsUpdateReducer,
   settingsCreat: settingsCreateReducer,
+
+
+  orderCreate: orderCreateReducer,
+  orderDetails: orderDetailsReducer,
+  orderPay: orderPayReducer,
+  orderPay2: orderPayReducer2,
+  orderMyList: orderMyListReducer,
+  orderList: orderListReducer,
+  orderDeliver: orderDeliverReducer,
+  orderCount: orderReducerCount,
+  orderCreateEvc: orderCreateReducerEvc,
 });
 
 const userInfoFormStorage = localStorage.getItem("userInfo-nasiib")

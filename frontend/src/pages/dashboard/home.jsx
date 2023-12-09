@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   Typography,
@@ -29,22 +29,30 @@ import {
   AiFillDollarCircle,
   AiOutlineWarning,
 } from "react-icons/ai";
-
-
+import { listOrders } from "@/actions/orderActions";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { Message } from "primereact/message";
+import moment from "moment";
+import { Button } from "primereact/button";
 
 
 
 export function Home() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const orderList = useSelector((state) => state.orderList);
+  const { loading, error, orders } = orderList;
 
 
   useEffect(()=>{
     if (!userInfo && !userInfo.isAdmin) {
       navigate("/sign-in");
     }
+    dispatch(listOrders());
 
     
   },[userInfo, navigate])
@@ -153,28 +161,136 @@ export function Home() {
             </Menu>
           </CardHeader>
           <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
+          <table className="w-full min-w-[640px] table-auto">
+              <thead className="sticky top-0 z-40 border-b bg-white">
                 <tr>
-                  {["Order No","Name"	,"Phone"	,"Date",	"PAYMENT METHOD",	"TOTAL",	"IsPaid"	, "IsDelivered"].map(
-                    (el) => (
-                      <th
-                        key={el}
-                        className="border-b border-blue-gray-50 py-3 px-6 text-left"
+                  {[
+                    "Order No",
+                    "Name",
+                    "Phone",
+                    "Date",
+                    "PAYMENT METHOD",
+                    "TOTAL",
+                    "IsPaid",
+                    "IsDelivered",
+                  ].map((el) => (
+                    <th
+                      key={el}
+                      className="border-b border-blue-gray-50 py-3 px-6 text-left"
+                    >
+                      <Typography
+                        variant="small"
+                        className="text-[11px] font-medium uppercase text-blue-gray-600"
                       >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-medium uppercase text-blue-gray-400"
-                        >
-                          {el}
-                        </Typography>
-                      </th>
-                    )
-                  )}
+                        {el}
+                      </Typography>
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody>
-              </tbody>
+              {loading ? (
+                <ProgressSpinner
+                  style={{ width: "20px", height: "20px" }}
+                  strokeWidth="6"
+                  fill="var(--surface-ground)"
+                  animationDuration=".5s"
+                />
+              ) : error ? (
+                <Message severity="error" text={error} />
+              ) : (
+                <tbody>
+                  {orders.map((order) => (
+                    <tr key={order.id}>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order._id && order._id.substring(0, 15)}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.user && order.user.name}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.user && order.user.phone}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order &&
+                            moment(order.createdAt).toString().substring(0, 21)}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.paymentMethod}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          ${order.totalPrice}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.isPaid ? (
+                            order.paidAt.substring(0, 10)
+                          ) : (
+                            <i
+                              className="fa fa-times"
+                              style={{ color: "red" }}
+                            ></i>
+                          )}
+                        </Typography>
+                      </td>
+                      <td className="border-b border-blue-gray-50 py-3 px-6 text-left">
+                        <Typography
+                          variant="small"
+                          className="text-[11px] font-medium capitalize text-blue-gray-400"
+                        >
+                          {order.isDelivered ? (
+                            order.deliveredAt.substring(0, 10)
+                          ) : (
+                            <i
+                              className="fa fa-times"
+                              style={{ color: "red" }}
+                            ></i>
+                          )}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Button
+                          label=""
+                          icon="pi pi-file-edit"
+                          className="h-8"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
             </table>
           </CardBody>
         </Card>
