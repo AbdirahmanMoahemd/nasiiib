@@ -474,7 +474,6 @@ export const getMyOrdersApp = asyncHandler(async (req, res) => {
     const orders = await Order.find({ user: req.params.id })
       .populate("user")
       .populate("products.product")
-      .sort({ createdAt: -1 });
     res.json(orders);
   } catch (e) {
     res.status(500).json({ error: e.message });
