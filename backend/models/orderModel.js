@@ -92,6 +92,6 @@ const orderSchema = mongoose.Schema(
   }
 );
 
-const Oder = mongoose.model("Oder", orderSchema);
+const Orders = mongoose.model("Orders", orderSchema);
 
-export default Oder;
+export default Orders;

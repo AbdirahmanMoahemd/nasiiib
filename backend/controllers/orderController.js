@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import Order from "../models/oderModel.js";
+import Orders from "../models/orderModel.js";
 import Product from "../models/productModels.js";
 import User from "../models/userModel.js";
 import nodemailer from "nodemailer";
@@ -22,7 +22,7 @@ export const addOrderItems = asyncHandler(async (req, res) => {
     throw new Error("No order items");
     return;
   } else {
-    const order = new Order({
+    const order = new Orders({
       products,
       user: req.user._id,
       shippingAddress,
@@ -117,7 +117,7 @@ export const addOrderItemsEvc = asyncHandler(async (req, res) => {
     throw new Error("No order items");
     return;
   } else {
-    const order = new Order({
+    const order = new Orders({
       products,
       user: req.user._id,
       shippingAddress,
@@ -232,7 +232,7 @@ export const addOrderItems2 = asyncHandler(async (req, res) => {
     user.cart = [];
     user = await user.save();
 
-    let order = new Order({
+    let order = new Orders({
       products,
       user: req.user._id,
       shippingAddress,
@@ -312,10 +312,9 @@ export const addOrderItems2 = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/:id
 // @access  Private
 export const getOrderById = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id)
+  const order = await Orders.findById(req.params.id)
     .populate("user")
     .populate("products.product")
-    .sort({ createdAt: -1 });
   if (order) {
     res.json(order);
   } else {
@@ -328,7 +327,7 @@ export const getOrderById = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/:id/pay
 // @access  Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Orders.findById(req.params.id);
   if (order) {
     order.isPaid = true;
     order.paidAt = Date.now();
@@ -351,7 +350,7 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/:id/pay
 // @access  Private
 export const updateOrderToPaid2 = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Orders.findById(req.params.id);
   if (order) {
     order.isPaid = true;
     order.paidAt = Date.now();
@@ -374,7 +373,7 @@ export const updateOrderToPaid2 = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/:id/deliver
 // @access  Private/Admin
 export const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const order = await Orders.findById(req.params.id);
 
   if (order) {
     order.isDelivered = true;
@@ -393,7 +392,7 @@ export const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/myorders
 // @access  Private
 export const getMyOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ user: req.user._id })
+  const orders = await Orders.find({ user: req.user._id })
     .populate("user")
     .populate("products.product")
     .sort({ createdAt: -1 });
@@ -404,14 +403,14 @@ export const getMyOrders = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/myorders
 // @access  Private
 export const getMyOrdersAll = asyncHandler(async (req, res) => {
-  const orders = await Order.find({});
+  const orders = await Orders.find({});
 
   let counter2 = 0;
   for (let i = 0; i < orders.length; i++) {
     counter2++;
   }
   let allOrder;
-  const orders2 = await Order.find({ isPaid: true });
+  const orders2 = await Orders.find({ isPaid: true });
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
   };
@@ -432,7 +431,7 @@ export const getMyOrdersAll = asyncHandler(async (req, res) => {
 // @route   GET /api/orders
 // @access  Private/admin
 export const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({})
+  const orders = await Orders.find({})
     .populate("user")
     .populate("products.product")
     .sort({ createdAt: -1 });
@@ -445,7 +444,7 @@ export const getOrders = asyncHandler(async (req, res) => {
 export const getRecentOrders = asyncHandler(async (req, res) => {
   const start = new Date().toDateString();
 
-  const orders = await Order.find({ createdAt: { $gte: start } })
+  const orders = await Orders.find({ createdAt: { $gte: start } })
     .populate("user")
     .populate("products.product")
     .sort({ createdAt: -1 });
@@ -459,7 +458,7 @@ export const getRecentOrders = asyncHandler(async (req, res) => {
 export const getRecentOrders2 = asyncHandler(async (req, res) => {
   const start = new Date().toDateString();
 
-  const orders = await Order.find({ createdAt: { $gte: start } })
+  const orders = await Orders.find({ createdAt: { $gte: start } })
     .populate("user")
     .populate("products.product")
     .sort({ createdAt: -1 });
@@ -471,7 +470,7 @@ export const getRecentOrders2 = asyncHandler(async (req, res) => {
 // @access  Private
 export const getMyOrdersApp = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.params.id })
+    const orders = await Orders.find({ user: req.params.id })
       .populate("user")
       .populate("products.product")
     res.json(orders);
@@ -489,7 +488,7 @@ export const getOrdersByPhone = asyncHandler(async (req, res) => {
   const user = await User.find({ phone: phone });
 
   if (user) {
-    const orders = await Order.find({ user: user })
+    const orders = await Orders.find({ user: user })
       .populate("user")
       .populate("products.product")
       .sort({ createdAt: -1 });
@@ -502,7 +501,7 @@ export const getOrdersByPhone = asyncHandler(async (req, res) => {
 // @access  Private/admin
 export const getOrdersByPendding = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find({ status: 0 })
+    const orders = await Orders.find({ status: 0 })
       .populate("user")
       .populate("products.product")
       .sort({ createdAt: -1 });
@@ -520,7 +519,7 @@ export const getOrdersByPendding = asyncHandler(async (req, res) => {
 // @access  Private/admin
 export const getOrdersByProcess = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find({ status: 1 })
+    const orders = await Orders.find({ status: 1 })
       .populate("user")
       .populate("products.product")
       .sort({ createdAt: -1 });
@@ -537,7 +536,7 @@ export const getOrdersByProcess = asyncHandler(async (req, res) => {
 // @access  Private/admin
 export const getOrdersByComplete = asyncHandler(async (req, res) => {
   try {
-    const orders = await Order.find({ status: 3 })
+    const orders = await Orders.find({ status: 3 })
       .populate("user")
       .populate("products.product")
       .sort({ createdAt: -1 });
@@ -553,7 +552,7 @@ export const getOrdersByComplete = asyncHandler(async (req, res) => {
 // @route   GET /api/orders
 // @access  Private/admin
 export const getAllOrdersApp = asyncHandler(async (req, res) => {
-  const orders = await Order.find({})
+  const orders = await Orders.find({})
     .populate("user")
     .populate("products.product")
     .sort({ createdAt: -1 });
@@ -564,7 +563,7 @@ export const getAllOrdersApp = asyncHandler(async (req, res) => {
 export const changeOrderStatus = asyncHandler(async (req, res) => {
   try {
     const { id, status, isPaid, isDelivered } = req.body;
-    let order = await Order.findById(id);
+    let order = await Orders.findById(id);
     if (order) {
       order.status = status;
       order.isPaid = isPaid;
